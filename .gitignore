@@ -1,0 +1,6 @@
+*.exe
+*.o
+*.obj
+store.txt
+users.txt
+.vscode/
