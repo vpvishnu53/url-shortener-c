@@ -29,6 +29,7 @@ static void handle_client(SOCKET client)
             "<p>Visit /code to redirect.</p>";
 
         char response[1024];
+
         sprintf(response,
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/html\r\n"
@@ -45,6 +46,7 @@ static void handle_client(SOCKET client)
 
     if (e) {
         char response[4096];
+
         sprintf(response,
             "HTTP/1.1 302 Found\r\n"
             "Location: %s\r\n"
@@ -55,8 +57,8 @@ static void handle_client(SOCKET client)
     }
     else {
         const char *body = "<h1>404 Not Found</h1>";
-
         char response[1024];
+
         sprintf(response,
             "HTTP/1.1 404 Not Found\r\n"
             "Content-Type: text/html\r\n"
@@ -85,10 +87,23 @@ void start_http_server(void)
     bind(server, (struct sockaddr*)&addr, sizeof(addr));
     listen(server, 10);
 
-    printf("HTTP server running at http://localhost:%d\n", HTTP_PORT);
+    printf("HTTP server running at http://localhost:%d\n\n", HTTP_PORT);
+    printf("Available links:\n");
+
+    for (int i = 0; i < SHORT_TABLE_SIZE; i++) {
+        Entry *e = short_table[i];
+
+        while (e) {
+            printf("http://localhost:%d/%s\n", HTTP_PORT, e->short_code);
+            e = e->next_short;
+        }
+    }
+
+    printf("\n");
 
     while (1) {
         SOCKET client = accept(server, NULL, NULL);
+
         if (client != INVALID_SOCKET)
             handle_client(client);
     }
