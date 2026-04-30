@@ -11,13 +11,15 @@ static void print_help(void) {
          "  resolve <short>        get long URL for a short code\n"
          "  lookup  <url>          find short code for a URL\n"
          "  search  <keyword>      search stored URLs and aliases\n"
+         "  open    <short>        open short code in browser\n"
          "  delete  <short>        delete an entry\n"
          "  register <user>        create a user account\n"
          "  login    <user>        log in\n"
          "  logout                 log out\n"
          "  whoami                 show current user\n"
          "  mylinks                list your links\n"
-         "  serve                  start HTTP redirect server\n"
+         "  serve                  start HTTP redirect server in background\n"
+         "  stopserver             stop the HTTP server\n"
          "  help / quit");
 }
 
@@ -54,6 +56,7 @@ int main(void) {
             lookup_long(u);
         }
         else if (!strcmp(cmd, "search"))   { search_entries(strtok(NULL, ""));  }
+        else if (!strcmp(cmd, "open"))     { char *s = strtok(NULL," "); if(!s){puts("Usage: open <short>"); continue;} open_url(s); }
         else if (!strcmp(cmd, "delete"))   { char *s = strtok(NULL," "); if(!s){puts("Usage: delete <short>"); continue;} delete_entry(s); }
         else if (!strcmp(cmd, "register")) { cmd_register(strtok(NULL, " ")); }
         else if (!strcmp(cmd, "login"))    { cmd_login(strtok(NULL, " "));    }
@@ -61,6 +64,7 @@ int main(void) {
         else if (!strcmp(cmd, "whoami"))   { cmd_whoami();            }
         else if (!strcmp(cmd, "mylinks"))  { mylinks();               }
         else if (!strcmp(cmd, "serve"))    { start_http_server();     }
+        else if (!strcmp(cmd, "stopserver")){ stop_http_server();     }
         else if (!strcmp(cmd, "help"))     { print_help();            }
         else if (!strcmp(cmd, "quit"))     { break;                   }
         else puts("Unknown command. Type 'help'.");

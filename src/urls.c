@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 #include "shortener.h"
 
 Entry *find_by_short(const char *sc) {
@@ -72,6 +73,13 @@ void mylinks(void) {
                 printf("[%s] %s\n", e->short_code, e->long_url); n++;
             }
     if (!n) printf("No links for '%s'.\n", current_user);
+}
+
+void open_url(const char *sc) {
+    Entry *e = find_by_short(sc);
+    if (!e) { printf("Short code '%s' not found.\n", sc); return; }
+    printf("Opening: %s\n", e->long_url);
+    ShellExecuteA(NULL, "open", e->long_url, NULL, NULL, SW_SHOWNORMAL);
 }
 
 int delete_entry(const char *sc) {

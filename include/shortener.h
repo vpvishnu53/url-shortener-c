@@ -82,8 +82,10 @@ void   lookup_long  (const char *url);
 void   search_entries(const char *keyword);
 void   mylinks       (void);
 int    delete_entry  (const char *sc);
+void   open_url      (const char *sc);
 
 /* ── http.c ─────────────────────────────────────────────────────── */
 void start_http_server(void);
+void stop_http_server (void);
 
 #endif /* SHORTENER_H */

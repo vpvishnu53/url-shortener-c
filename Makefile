@@ -1,21 +1,23 @@
-# Makefile for url-shortener (multi-file build)
+# Makefile for url-shortener (Windows, MinGW/GCC)
 
-CC      = cc
+CC      = gcc
 CFLAGS  = -Wall -Wextra -Iinclude
-TARGET  = shortener
+LDFLAGS = -lws2_32
+TARGET  = shortener.exe
 SRCDIR  = src
-SRCS    = $(SRCDIR)/main.c \
-          $(SRCDIR)/hash.c \
-          $(SRCDIR)/validate.c \
-          $(SRCDIR)/storage.c \
-          $(SRCDIR)/users.c \
-          $(SRCDIR)/urls.c \
-          $(SRCDIR)/http.c
+
+SRCS = $(SRCDIR)/main.c     \
+       $(SRCDIR)/hash.c     \
+       $(SRCDIR)/validate.c \
+       $(SRCDIR)/storage.c  \
+       $(SRCDIR)/users.c    \
+       $(SRCDIR)/urls.c     \
+       $(SRCDIR)/http.c
 
 $(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS) $(LDFLAGS)
 
 clean:
-	rm -f $(TARGET) store.txt users.txt
+	del /Q $(TARGET) store.txt users.txt 2>nul || true
 
 .PHONY: clean
