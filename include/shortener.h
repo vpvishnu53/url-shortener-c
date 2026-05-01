@@ -81,6 +81,7 @@ void   resolve_short(const char *sc);
 void   lookup_long  (const char *url);
 void   search_entries(const char *keyword);
 void   mylinks       (void);
+void   claimlinks    (void);
 int    delete_entry  (const char *sc);
 void   open_url      (const char *sc);
 

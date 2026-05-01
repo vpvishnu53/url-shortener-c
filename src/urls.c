@@ -66,13 +66,58 @@ void search_entries(const char *kw) {
 
 void mylinks(void) {
     if (!current_user[0]) { printf("Not logged in.\n"); return; }
-    int n = 0;
+
+    int mine = 0, anon = 0;
+
+    /* First pass: links explicitly owned by current user */
+    printf("=== Links owned by '%s' ===\n", current_user);
     for (size_t i = 0; i < LONG_TABLE_SIZE; i++)
         for (Entry *e = long_table[i]; e; e = e->next_long)
             if (strcmp(e->owner, current_user) == 0) {
-                printf("[%s] %s\n", e->short_code, e->long_url); n++;
+                printf("  [%s] %s\n", e->short_code, e->long_url);
+                mine++;
             }
-    if (!n) printf("No links for '%s'.\n", current_user);
+    if (!mine) printf("  (none)\n");
+
+    /*
+     * Second pass: anonymous links.
+     * These exist when entries were created before anyone logged in.
+     * Shown separately so nothing is silently hidden.
+     * Use 'claimlinks' to reassign them to the current user.
+     */
+    printf("\n=== Anonymous links (created before login) ===\n");
+    for (size_t i = 0; i < LONG_TABLE_SIZE; i++)
+        for (Entry *e = long_table[i]; e; e = e->next_long)
+            if (strcmp(e->owner, "anonymous") == 0 ||
+                strcmp(e->owner, "") == 0) {
+                printf("  [%s] %s\n", e->short_code, e->long_url);
+                anon++;
+            }
+    if (!anon) printf("  (none)\n");
+    else       printf("\n  Tip: type 'claimlinks' to assign these to '%s'.\n",
+                      current_user);
+
+    printf("\nTotal: %d owned, %d anonymous\n", mine, anon);
+}
+
+/* claimlinks: reassigns all anonymous entries to the current logged-in user */
+void claimlinks(void) {
+    if (!current_user[0]) { printf("Not logged in.\n"); return; }
+    int claimed = 0;
+    for (size_t i = 0; i < LONG_TABLE_SIZE; i++)
+        for (Entry *e = long_table[i]; e; e = e->next_long)
+            if (strcmp(e->owner, "anonymous") == 0 ||
+                strcmp(e->owner, "") == 0) {
+                strncpy(e->owner, current_user, sizeof(e->owner) - 1);
+                e->owner[sizeof(e->owner) - 1] = '\0';
+                claimed++;
+            }
+    if (claimed) {
+        rebuild_store_file();
+        printf("Claimed %d link(s) for '%s'.\n", claimed, current_user);
+    } else {
+        printf("No anonymous links to claim.\n");
+    }
 }
 
 void open_url(const char *sc) {

@@ -106,9 +106,10 @@ static DWORD WINAPI server_thread(LPVOID unused)
 
 void start_http_server(void)
 {
+    /* If already running, stop first then fall through to restart */
     if (server_running) {
-        printf("Server is already running on port %d.\n", HTTP_PORT);
-        return;
+        printf("Server already running — restarting...\n");
+        stop_http_server();
     }
 
     WSADATA wsa;
