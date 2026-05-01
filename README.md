@@ -2,6 +2,10 @@
 
 A local URL shortener written in C for Windows.
 
+## Download
+
+Grab the latest `shortener.exe` from the [Releases](https://github.com/vpvishnu53/url-shortener-c/releases) page. No build required.
+
 ## Build
 
 Requires MinGW (GCC for Windows).
@@ -42,7 +46,44 @@ gcc -Wall -Wextra -Iinclude -o shortener.exe src/main.c src/hash.c src/validate.
 `serve` starts a redirect server on `http://localhost:8080` in the background.
 The CLI stays usable while it runs. Typing `serve` again restarts it.
 
-Visit `http://localhost:8080/<short-code>` in any browser to be redirected.
+Visit `http://localhost:8080/<short-code>` in any browser or use `open <short-code>` in the CLI to be redirected.
+
+## Example Usage
+
+```
+> register example_user
+Registered 'example_user'.
+
+> login example_user
+Logged in as 'example_user'.
+
+> shorten https://github.com gh
+short: gh
+
+> shorten https://google.com
+short: 4Kx9mZ
+
+> resolve gh
+long: https://github.com
+
+> search github
+[gh] https://github.com  (owner: example_user)
+
+> open gh
+Opening: https://github.com
+
+> mylinks
+=== Links owned by 'example_user' ===
+  [gh] https://github.com
+  [4Kx9mZ] https://google.com
+
+> serve
+Server started on http://localhost:8080
+Type 'stopserver' to stop it.
+
+> stopserver
+Server stopped.
+```
 
 ## Data Files
 
